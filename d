@@ -64,3 +64,16 @@ class BudgetApp:
         tk.Label(self.add_tab, text="Категория:").grid(row=2, column=0, padx=10, pady=5, sticky="e")
         self.category = tk.StringVar()
         ttk.Combobox(self.add_tab, textvariable=self.category, values=self.categories).grid(row=2, column=1, columnspan=2, sticky="we", padx=10)
+
+        # Дата
+        tk.Label(self.add_tab, text="Дата:").grid(row=3, column=0, padx=10, pady=5, sticky="e")
+        self.date = tk.StringVar(value=datetime.now().strftime("%Y-%m-%d"))
+        tk.Entry(self.add_tab, textvariable=self.date).grid(row=3, column=1, columnspan=2, sticky="we", padx=10)
+        
+        # Описание
+        tk.Label(self.add_tab, text="Описание:").grid(row=4, column=0, padx=10, pady=5, sticky="e")
+        self.description = tk.StringVar()
+        tk.Entry(self.add_tab, textvariable=self.description).grid(row=4, column=1, columnspan=2, sticky="we", padx=10)
+        
+        # Кнопка добавления
+        tk.Button(self.add_tab, text="Добавить транзакцию", command=self.add_transaction).grid(row=5, column=1, pady=10)

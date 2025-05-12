@@ -202,3 +202,48 @@ class BudgetApp:
         # Очистка таблицы
         for item in self.transactions_tree.get_children():
             self.transactions_tree.delete(item)
+
+        # Применение фильтров
+        filtered = self.transactions
+        
+        if self.filter_type.get() != "Все":
+            filtered = [t for t in filtered if t["type"] == self.filter_type.get()]
+        
+        if self.filter_category.get() != "Все":
+            filtered = [t for t in filtered if t["category"] == self.filter_category.get()]
+        
+        if self.filter_date_from.get():
+            try:
+                date_from = datetime.strptime(self.filter_date_from.get(), "%Y-%m-%d").date()
+                filtered = [t for t in filtered if datetime.strptime(t["date"], "%Y-%m-%d").date() >= date_from]
+            except ValueError:
+                pass
+        
+        if self.filter_date_to.get():
+            try:
+                date_to = datetime.strptime(self.filter_date_to.get(), "%Y-%m-%d").date()
+                filtered = [t for t in filtered if datetime.strptime(t["date"], "%Y-%m-%d").date() <= date_to]
+            except ValueError:
+                pass
+        
+        # Заполнение таблицы
+        for transaction in filtered:
+            self.transactions_tree.insert("", "end", values=(
+                transaction["id"],
+                transaction["date"],
+                transaction["type"],
+                transaction["category"],
+                f"{transaction['amount']:.2f}",
+                transaction["description"]
+            ))
+    
+    def delete_transaction(self):
+        selected = self.transactions_tree.selection()
+        if not selected:
+            messagebox.showwarning("Предупреждение", "Выберите транзакцию для удаления")
+            return
+            
+        for item in selected:
+            trans_id = int(self.transactions_tree.item(item, "values")[0])
+            self.transactions = [t for t in self.transactions if t["id"] != trans_id]
+        

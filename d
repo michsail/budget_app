@@ -127,3 +127,64 @@ class BudgetApp:
         
         # Кнопка удаления
         tk.Button(self.view_tab, text="Удалить выбранное", command=self.delete_transaction).pack(pady=5)
+
+         # Обновление таблицы
+        self.update_transactions_table()
+    
+    def setup_budget_tab(self):
+        # Установка лимитов бюджета
+        tk.Label(self.budget_tab, text="Установите месячные лимиты для категорий:").pack(pady=5)
+        
+        self.budget_entries = {}
+        for i, category in enumerate(self.categories):
+            frame = ttk.Frame(self.budget_tab)
+            frame.pack(fill="x", padx=10, pady=2)
+            
+            tk.Label(frame, text=category, width=15).pack(side="left")
+            self.budget_entries[category] = tk.DoubleVar(value=self.budget_limits[category])
+            tk.Entry(frame, textvariable=self.budget_entries[category]).pack(side="left", fill="x", expand=True)
+            tk.Label(frame, text="руб.").pack(side="left", padx=5)
+        
+        tk.Button(self.budget_tab, text="Сохранить лимиты", command=self.save_budget_limits).pack(pady=10)
+        
+        # Отображение текущего состояния бюджета
+        tk.Label(self.budget_tab, text="Текущее состояние бюджета:").pack(pady=5)
+        
+        self.budget_status_text = tk.Text(self.budget_tab, height=10, state="disabled")
+        self.budget_status_text.pack(fill="both", expand=True, padx=10, pady=5)
+        
+        self.update_budget_status()
+    
+    def setup_stats_tab(self):
+        # Статистика по категориям
+        tk.Label(self.stats_tab, text="Статистика по расходам по категориям:").pack(pady=5)
+        
+        self.stats_canvas = tk.Canvas(self.stats_tab)
+        self.stats_canvas.pack(fill="both", expand=True, padx=10, pady=5)
+        
+        # Обновление статистики
+        self.update_stats()
+    
+    def add_transaction(self):
+        try:
+            amount = self.amount.get()
+            if amount <= 0:
+                messagebox.showerror("Ошибка", "Сумма должна быть положительной")
+                return
+                
+            transaction = {
+                "id": len(self.transactions) + 1,
+                "date": self.date.get(),
+                "type": self.trans_type.get(),
+                "category": self.category.get(),
+                "amount": amount,
+                "description": self.description.get()
+            }
+            
+            self.transactions.append(transaction)
+            self.save_data()
+            self.update_transactions_table()
+            self.update_budget_status()
+            self.update_stats()
+            
+            messagebox.showinfo("Успех", "Транзакция добавлена успешно")

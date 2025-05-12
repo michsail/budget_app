@@ -41,3 +41,26 @@ class BudgetApp:
         # Вкладка статистики
         self.stats_tab = ttk.Frame(self.notebook)
         self.notebook.add(self.stats_tab, text="Статистика")
+
+        # Заполнение вкладки добавления транзакции
+        self.setup_add_tab()
+        self.setup_view_tab()
+        self.setup_budget_tab()
+        self.setup_stats_tab()
+    
+    def setup_add_tab(self):
+        # Тип транзакции (доход/расход)
+        tk.Label(self.add_tab, text="Тип:").grid(row=0, column=0, padx=10, pady=5, sticky="e")
+        self.trans_type = tk.StringVar(value="Расход")
+        tk.Radiobutton(self.add_tab, text="Доход", variable=self.trans_type, value="Доход").grid(row=0, column=1, sticky="w")
+        tk.Radiobutton(self.add_tab, text="Расход", variable=self.trans_type, value="Расход").grid(row=0, column=2, sticky="w")
+        
+        # Сумма
+        tk.Label(self.add_tab, text="Сумма:").grid(row=1, column=0, padx=10, pady=5, sticky="e")
+        self.amount = tk.DoubleVar()
+        tk.Entry(self.add_tab, textvariable=self.amount).grid(row=1, column=1, columnspan=2, sticky="we", padx=10)
+        
+        # Категория
+        tk.Label(self.add_tab, text="Категория:").grid(row=2, column=0, padx=10, pady=5, sticky="e")
+        self.category = tk.StringVar()
+        ttk.Combobox(self.add_tab, textvariable=self.category, values=self.categories).grid(row=2, column=1, columnspan=2, sticky="we", padx=10)

@@ -100,3 +100,30 @@ class BudgetApp:
         tk.Entry(filter_frame, textvariable=self.filter_date_to).grid(row=1, column=3, padx=5, pady=2)
         
         tk.Button(filter_frame, text="Применить", command=self.apply_filters).grid(row=1, column=4, padx=5, pady=2)
+
+        # Таблица транзакций
+        columns = ("id", "date", "type", "category", "amount", "description")
+        self.transactions_tree = ttk.Treeview(self.view_tab, columns=columns, show="headings")
+        
+        self.transactions_tree.heading("id", text="ID")
+        self.transactions_tree.heading("date", text="Дата")
+        self.transactions_tree.heading("type", text="Тип")
+        self.transactions_tree.heading("category", text="Категория")
+        self.transactions_tree.heading("amount", text="Сумма")
+        self.transactions_tree.heading("description", text="Описание")
+        
+        self.transactions_tree.column("id", width=30)
+        self.transactions_tree.column("date", width=80)
+        self.transactions_tree.column("type", width=70)
+        self.transactions_tree.column("category", width=100)
+        self.transactions_tree.column("amount", width=80)
+        self.transactions_tree.column("description", width=200)
+        
+        scrollbar = ttk.Scrollbar(self.view_tab, orient="vertical", command=self.transactions_tree.yview)
+        self.transactions_tree.configure(yscrollcommand=scrollbar.set)
+        
+        self.transactions_tree.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+        
+        # Кнопка удаления
+        tk.Button(self.view_tab, text="Удалить выбранное", command=self.delete_transaction).pack(pady=5)

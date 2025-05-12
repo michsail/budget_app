@@ -188,3 +188,17 @@ class BudgetApp:
             self.update_stats()
             
             messagebox.showinfo("Успех", "Транзакция добавлена успешно")
+
+            # Очистка полей
+            self.amount.set(0)
+            self.description.set("")
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Ошибка при добавлении транзакции: {str(e)}")
+    
+    def apply_filters(self):
+        self.update_transactions_table()
+    
+    def update_transactions_table(self):
+        # Очистка таблицы
+        for item in self.transactions_tree.get_children():
+            self.transactions_tree.delete(item)

@@ -77,3 +77,26 @@ class BudgetApp:
         
         # Кнопка добавления
         tk.Button(self.add_tab, text="Добавить транзакцию", command=self.add_transaction).grid(row=5, column=1, pady=10)
+
+    def setup_view_tab(self):
+        # Фильтры
+        filter_frame = ttk.LabelFrame(self.view_tab, text="Фильтры")
+        filter_frame.pack(fill="x", padx=10, pady=5)
+        
+        tk.Label(filter_frame, text="Тип:").grid(row=0, column=0, padx=5, pady=2)
+        self.filter_type = tk.StringVar(value="Все")
+        ttk.Combobox(filter_frame, textvariable=self.filter_type, values=["Все", "Доход", "Расход"]).grid(row=0, column=1, padx=5, pady=2)
+        
+        tk.Label(filter_frame, text="Категория:").grid(row=0, column=2, padx=5, pady=2)
+        self.filter_category = tk.StringVar(value="Все")
+        ttk.Combobox(filter_frame, textvariable=self.filter_category, values=["Все"] + self.categories).grid(row=0, column=3, padx=5, pady=2)
+        
+        tk.Label(filter_frame, text="Дата от:").grid(row=1, column=0, padx=5, pady=2)
+        self.filter_date_from = tk.StringVar()
+        tk.Entry(filter_frame, textvariable=self.filter_date_from).grid(row=1, column=1, padx=5, pady=2)
+        
+        tk.Label(filter_frame, text="Дата до:").grid(row=1, column=2, padx=5, pady=2)
+        self.filter_date_to = tk.StringVar()
+        tk.Entry(filter_frame, textvariable=self.filter_date_to).grid(row=1, column=3, padx=5, pady=2)
+        
+        tk.Button(filter_frame, text="Применить", command=self.apply_filters).grid(row=1, column=4, padx=5, pady=2)

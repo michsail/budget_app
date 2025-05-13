@@ -246,4 +246,56 @@ class BudgetApp:
         for item in selected:
             trans_id = int(self.transactions_tree.item(item, "values")[0])
             self.transactions = [t for t in self.transactions if t["id"] != trans_id]
+               
+        # Переиндексация оставшихся транзакций
+        for i, transaction in enumerate(self.transactions, 1):
+            transaction["id"] = i
         
+        self.save_data()
+        self.update_transactions_table()
+        self.update_budget_status()
+        self.update_stats()
+        messagebox.showinfo("Успех", "Транзакция удалена успешно")
+    
+    def save_budget_limits(self):
+        for category in self.categories:
+            self.budget_limits[category] = self.budget_entries[category].get()
+        
+        self.save_data()
+        self.update_budget_status()
+        messagebox.showinfo("Успех", "Лимиты бюджета сохранены")
+    
+    def update_budget_status(self):
+        self.budget_status_text.config(state="normal")
+        self.budget_status_text.delete(1.0, "end")
+        
+        # Рассчитываем расходы по категориям
+        expenses = {category: 0 for category in self.categories}
+        for transaction in self.transactions:
+            if transaction["type"] == "Расход":
+                if transaction["category"] in expenses:
+                    expenses[transaction["category"]] += transaction["amount"]
+        
+        # Выводим информацию
+        total_expenses = sum(expenses.values())
+        total_budget = sum(self.budget_limits.values())
+        
+        self.budget_status_text.insert("end", f"Общий бюджет: {total_budget:.2f} руб.\n")
+        self.budget_status_text.insert("end", f"Общие расходы: {total_expenses:.2f} руб.\n")
+        self.budget_status_text.insert("end", f"Остаток: {total_budget - total_expenses:.2f} руб.\n\n")
+        
+        self.budget_status_text.insert("end", "Детали по категориям:\n")
+        for category in self.categories:
+            limit = self.budget_limits[category]
+            spent = expenses[category]
+            remaining = limit - spent
+            
+            if limit > 0:
+                percent = (spent / limit) * 100
+            else:
+                percent = 0
+                
+            self.budget_status_text.insert("end", 
+                f"{category}: {spent:.2f} / {limit:.2f} руб. ({percent:.1f}%) - Остаток: {remaining:.2f} руб.\n")
+        
+        self.budget_status_text.config(state="disabled")

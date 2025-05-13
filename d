@@ -333,3 +333,42 @@ class BudgetApp:
                                        fill=color, 
                                        outline="black")
             
+            # Подписи
+            angle = start_angle + extent / 2
+            x = 150 + 120 * 0.5 * math.cos(math.radians(angle))
+            y = 150 + 120 * 0.5 * math.sin(math.radians(angle))
+            
+            self.stats_canvas.create_text(x, y, 
+                                         text=f"{category}\n{amount:.2f} руб. ({amount/total*100:.1f}%)", 
+                                         font=("Arial", 8))
+            
+            start_angle += extent
+    
+    def save_data(self):
+        data = {
+            "transactions": self.transactions,
+            "budget_limits": self.budget_limits
+        }
+        
+        try:
+            with open("budget_data.json", "w") as f:
+                json.dump(data, f, indent=2)
+        except Exception as e:
+            messagebox.showerror("Ошибка", f"Не удалось сохранить данные: {str(e)}")
+    
+    def load_data(self):
+        if os.path.exists("budget_data.json"):
+            try:
+                with open("budget_data.json", "r") as f:
+                    data = json.load(f)
+                    self.transactions = data.get("transactions", [])
+                    self.budget_limits = data.get("budget_limits", {category: 0 for category in self.categories})
+            except Exception as e:
+                messagebox.showerror("Ошибка", f"Не удалось загрузить данные: {str(e)}")
+
+if __name__ == "__main__":
+    import math
+    root = tk.Tk()
+    app = BudgetApp(root)
+    root.mainloop()
+

@@ -326,10 +326,20 @@ class BudgetApp:
         for i, (category, amount) in enumerate(non_zero_categories.items()):
             extent = (amount / total) * 360
             color = colors[i % len(colors)]
+
+                # Рисуем круговую диаграмму
+             self.stats_canvas.delete("all")
+        total = sum(non_zero_categories.values())
+        
+        start_angle = 0
+        colors = ["#FF9999", "#66B2FF", "#99FF99", "#FFCC99", "#FF99FF", "#FFFF99", "#99FFFF"]
+        
+        for i, (category, amount) in enumerate(non_zero_categories.items()):
+            extent = (amount / total) * 360
+            color = colors[i % len(colors)]
             
             self.stats_canvas.create_arc(50, 50, 250, 250, 
                                        start=start_angle, 
                                        extent=extent, 
                                        fill=color, 
                                        outline="black")
-            
